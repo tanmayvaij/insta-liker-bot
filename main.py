@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from os import getenv
 
 
-load_dotenv(dotenv_path=".env")
+load_dotenv(dotenv_path="config.env")
 down_time = 4
 
 
@@ -62,7 +62,7 @@ class InstaBot:
 
             self.browser.get(f"https://www.instagram.com/{username}")
             sleep(down_time)
-            sleep(2)
+            sleep(3)
 
             try: 
 
