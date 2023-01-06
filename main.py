@@ -6,39 +6,84 @@ from time import sleep
 from dotenv import load_dotenv
 from os import getenv
 
+
 load_dotenv(dotenv_path=".env")
 down_time = 4
 
-browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
-browser.get("https://www.instagram.com")
-sleep(down_time)
+class InstaBot:
 
-username = browser.find_element(By.NAME, "username")
-password = browser.find_element(By.NAME, "password")
-submitbtn = browser.find_element(By.TAG_NAME, "button")
 
-username.send_keys(getenv("INSTAGRAM_USERNAME"))
-sleep(down_time)
+    def __init__(self):
+        self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        self.target = getenv("TARGET_USERNAME")
 
-password.send_keys(getenv("INSTAGRAM_PASSWORD"))
-sleep(down_time)
+    def login(self):
 
-submitbtn.click()
-sleep(down_time)
+        self.browser.get("https://www.instagram.com")
+        sleep(down_time)
 
-browser.get("https://www.instagram.com/boatxaman/followers")
-sleep(down_time)
+        username = self.browser.find_element(By.NAME, "username")
+        password = self.browser.find_element(By.NAME, "password")
+        submitbtn = self.browser.find_element(By.TAG_NAME, "button")
 
-follower_window = browser.find_element(By.CLASS_NAME, "_aano")
-follower_window.click()
-sleep(down_time)
+        username.send_keys(getenv("INSTAGRAM_USERNAME"))
+        sleep(down_time)
 
-for _ in range (2):
-    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(down_time)
+        password.send_keys(getenv("INSTAGRAM_PASSWORD"))
+        sleep(down_time)
 
-d = browser.find_elements(By.CLASS_NAME, "_ab8y")
+        submitbtn.click()
+        sleep(down_time)
 
-for i in d:
-    print(i.text)
+
+    def get_followers(self): 
+
+        self.browser.get(f"https://www.instagram.com/{self.target}/followers")
+        sleep(down_time)
+
+        follower_window = "document.getElementsByClassName('_aano')[0]"
+
+        for _ in range(3):
+            self.browser.execute_script(f"{follower_window}.scrollBy(0, {follower_window}.scrollHeight)")
+            sleep(down_time)
+
+
+        followers_list = [ i.text for i in self.browser.find_elements(By.CLASS_NAME, "_ab8y") ]
+
+        return followers_list
+
+
+    def like_story(self):
+
+        followers_list = self.get_followers()
+
+        for username in followers_list:
+
+            self.browser.get(f"https://www.instagram.com/{username}")
+            sleep(down_time)
+            sleep(2)
+
+            try: 
+
+                profile = self.browser.find_element(By.CLASS_NAME, "_aarf")
+                profile.click()
+                sleep(down_time)
+                sleep(2)
+
+                likebtn = self.browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/section/div[1]/div/section/div/div[3]/div/div/div[2]/span/button")
+                likebtn.click()
+                print(f"Story of {username} liked")
+                sleep(down_time)
+
+            except:
+                continue
+
+
+    def main(self):
+        self.login()
+        self.like_story()
+
+
+bot = InstaBot()
+bot.main()
