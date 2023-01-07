@@ -36,6 +36,7 @@ class InstaBot:
 
         submitbtn.click()
         sleep(down_time)
+        sleep(3)
 
 
     def get_followers(self): 
