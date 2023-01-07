@@ -83,7 +83,6 @@ class InstaBot:
                 profile = self.browser.find_element(By.CLASS_NAME, "_aarf")
                 profile.click()
                 sleep(down_time)
-                sleep(2)
 
                 likebtn = self.browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/section/div[1]/div/section/div/div[3]/div/div/div[2]/span/button")
                 likebtn.click()
