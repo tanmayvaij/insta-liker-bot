@@ -18,6 +18,7 @@ class InstaBot:
         self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         self.target = getenv("TARGET_USERNAME")
 
+
     def login(self):
 
         self.browser.get("https://www.instagram.com")
@@ -39,22 +40,35 @@ class InstaBot:
 
     def get_followers(self): 
 
+        # open window
         self.browser.get(f"https://www.instagram.com/{self.target}/followers")
         sleep(down_time)
 
         follower_window = "document.getElementsByClassName('_aano')[0]"
 
-        for _ in range(3):
+        # scrolling window for loading users in dom
+        for _ in range(6):
             self.browser.execute_script(f"{follower_window}.scrollBy(0, {follower_window}.scrollHeight)")
             sleep(down_time)
 
+        lis  = self.browser.find_elements(By.CLASS_NAME, "_aarg")
 
-        followers_list = [ i.text for i in self.browser.find_elements(By.CLASS_NAME, "_ab8y") ]
+        usernames = []
 
-        return followers_list
+        for div in lis:
+            spantags = div.find_element(By.TAG_NAME, "span")
+            imgtags = spantags.find_element(By.TAG_NAME, "img")
+            alt = imgtags.get_attribute("alt")
+            usernames.append(alt.split("'")[0])
+
+        print(f"Got stories with {len(usernames)} accounts")
+
+        return usernames
 
 
     def like_story(self):
+
+        counter = 0
 
         followers_list = self.get_followers()
 
@@ -73,11 +87,16 @@ class InstaBot:
 
                 likebtn = self.browser.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[1]/div/div/div/div[1]/div[1]/section/div[1]/div/section/div/div[3]/div/div/div[2]/span/button")
                 likebtn.click()
-                print(f"Story of {username} liked")
+
+                counter += 1
+                print(f"{counter}. Story of {username} liked")
+
                 sleep(down_time)
 
             except:
                 continue
+
+        print(f"liked {counter} stories")
 
 
     def main(self):
