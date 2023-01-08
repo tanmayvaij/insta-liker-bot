@@ -1,9 +1,9 @@
 # insta liker bot ( Selenium Bot )
 
 ## Requirements
-python <br/>
-google chrome <br/>
-good insternet connection <br/>
+1. python <br/>
+2. google chrome <br/>
+3. good internet connection <br/>
 
 <br/>
 
