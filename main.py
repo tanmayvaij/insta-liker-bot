@@ -9,6 +9,16 @@ from os import getenv
 
 load_dotenv(dotenv_path="config.env")
 down_time = 4
+loading_rounds = 0
+limit = getenv("LIMIT")
+
+
+if (limit == ""):
+    print("Set a limit first")
+    print("Exiting")
+    exit(0)
+else:
+    loading_rounds = limit // 12
 
 
 class InstaBot:
@@ -28,11 +38,17 @@ class InstaBot:
         password = self.browser.find_element(By.NAME, "password")
         submitbtn = self.browser.find_element(By.TAG_NAME, "button")
 
-        username.send_keys(getenv("INSTAGRAM_USERNAME"))
-        sleep(down_time)
+        try:
+            username.send_keys(getenv("INSTAGRAM_USERNAME"))
+            sleep(down_time)
 
-        password.send_keys(getenv("INSTAGRAM_PASSWORD"))
-        sleep(down_time)
+            password.send_keys(getenv("INSTAGRAM_PASSWORD"))
+            sleep(down_time)
+        
+        except:
+            print("Enter username, password in config file first and then retry")
+            print("Exiting")
+            exit()
 
         submitbtn.click()
         sleep(down_time)
@@ -41,14 +57,20 @@ class InstaBot:
 
     def get_followers(self): 
 
-        # open window
-        self.browser.get(f"https://www.instagram.com/{self.target}/followers")
-        sleep(down_time)
+        try:
+            # open window
+            self.browser.get(f"https://www.instagram.com/{self.target}/followers")
+            sleep(down_time)
+        
+        except:
+            print("Enter target account first in config file and then retry")
+            print("Exiting")
+            exit(0)
 
         follower_window = "document.getElementsByClassName('_aano')[0]"
 
         # scrolling window for loading users in dom
-        for _ in range(42):
+        for _ in range(loading_rounds):
             self.browser.execute_script(f"{follower_window}.scrollBy(0, {follower_window}.scrollHeight)")
             sleep(down_time)
 
