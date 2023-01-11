@@ -48,7 +48,7 @@ class InstaBot:
         follower_window = "document.getElementsByClassName('_aano')[0]"
 
         # scrolling window for loading users in dom
-        for _ in range(20):
+        for _ in range(42):
             self.browser.execute_script(f"{follower_window}.scrollBy(0, {follower_window}.scrollHeight)")
             sleep(down_time)
 
