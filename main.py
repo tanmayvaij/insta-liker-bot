@@ -18,7 +18,7 @@ if (limit == ""):
     print("Exiting")
     exit(0)
 else:
-    loading_rounds = limit // 12
+    loading_rounds = int(limit) // 12
 
 
 class InstaBot:
